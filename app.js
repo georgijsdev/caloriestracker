@@ -47,6 +47,9 @@ const DOMCtrl = (function() {
             });
 
             document.querySelector(UISelectors.itemList).innerHTML = html;
+        },
+        getSelectors: function() {
+            return UISelectors;
         }
     }
 })();
@@ -54,7 +57,7 @@ const DOMCtrl = (function() {
 // App
 const AppCtrl = (function(ItemCtrl, DOMCtrl) {
     const loadEL = function() {
-
+        const UISelectors = DOMCtrl.getSelectors();
     }
 
     return {
