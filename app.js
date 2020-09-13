@@ -9,9 +9,7 @@ const ItemCtrl = (function() {
     }
 
     const data = {
-      items: [
-          {id: 0, name: 'Steak Dinner', calories: 500}
-      ],
+      items: [],
       currentItem: null, 
       totalCalories: 0
     }
@@ -37,6 +35,17 @@ const ItemCtrl = (function() {
 
             return newItem;
         },
+        getTotalCalories: function() {
+            let total = 0;
+
+            data.items.forEach(function(item) {
+                total += item.calories;
+            });
+
+            data.totalCalories = total;
+
+            return data.totalCalories;
+        },
         logData: function() {
             return data;
         }
@@ -49,7 +58,8 @@ const DOMCtrl = (function() {
         itemList: '#item-list',
         addbtn: '.add-btn',
         itemNameInput: '#item-name',
-        itemCaloriesInput: '#item-calories'
+        itemCaloriesInput: '#item-calories',
+        totalCalories: '.total-total',
     }
 
     return {
@@ -79,6 +89,8 @@ const DOMCtrl = (function() {
             return UISelectors;
         },
         addListItem : function(item) {
+            document.querySelector(UISelectors.itemList).style.display = 'block';
+
             const li = document.createElement('li');
             
             li.classList.add('collection-item');
@@ -95,6 +107,12 @@ const DOMCtrl = (function() {
         clearInput: function() {
             document.querySelector(UISelectors.itemNameInput).value = '';
             document.querySelector(UISelectors.itemCaloriesInput).value = '';
+        },
+        hideList: function() {
+            document.querySelector(UISelectors.itemList).style.display = 'none';
+        },
+        showTotalCalories: function(totalCalories) {
+            document.querySelector(UISelectors.totalCalories).textContent = totalCalories;
         }
     }
 })();
@@ -115,6 +133,10 @@ const AppCtrl = (function(ItemCtrl, DOMCtrl) {
 
             DOMCtrl.addListItem(newItem);
 
+            const totalCalories = ItemCtrl.getTotalCalories();
+
+            DOMCtrl.showTotalCalories(totalCalories);
+
             DOMCtrl.clearInput();
         }
 
@@ -125,7 +147,11 @@ const AppCtrl = (function(ItemCtrl, DOMCtrl) {
         init: function() {
             const items = ItemCtrl.getItems();
 
-            DOMCtrl.populateItemList(items);
+            if (items.length === 0) {
+                DOMCtrl.hideList();
+            } else {
+                DOMCtrl.populateItemList(items);
+            }
 
             loadEL();
         }
